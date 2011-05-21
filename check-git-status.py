@@ -2,13 +2,27 @@
 import os
 import gtk
 import egg.trayicon     # egg == python-gnome2-extras
-
+import gitutils
 
 trayIconImage = os.path.dirname(__file__) + '/icon.png'
-print trayIconImage
 
-def callback(widget, ev):
-    print "Button %i pressed!" % ev.button
+def callback(widget, event):
+    if event.button == 3:
+        repos = gitutils.repogitoryInfos(os.environ.get('HOME') + '/work')
+        menu = gtk.Menu()
+        tooltips = gtk.Tooltips()
+        tooltips.enable()
+        tooltips.set_delay(100)
+        for r in repos:
+            menuitem_x = gtk.MenuItem(r['name'])
+            tooltips.set_tip(menuitem_x, r['status'])
+            menu.append(menuitem_x)
+        menuitem_exit = gtk.MenuItem("Exit")
+        menu.append(menuitem_exit)
+        menuitem_exit.connect("activate", lambda x: gtk.main_quit())
+        menu.show_all()
+        menu.popup(None, None, None, event.button, event.time, tray)
+
 
 tray = egg.trayicon.TrayIcon("TrayIcon")
 box = gtk.EventBox()

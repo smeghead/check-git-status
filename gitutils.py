@@ -19,13 +19,20 @@ def execCommand(cmd, path):
 
 def createRepoInfo(path):
     branch = execCommand('git symbolic-ref HEAD 2> /dev/null', path)
+    status = execCommand('git status 2> /dev/null', path)
     return {
+        'name': path.split('/')[-1],
         'path': path,
-        'branch': branch
+        'branch': branch,
+        'status': status,
     }
 
 def getRepogitoryInfos(repogitories):
     return map(createRepoInfo, repogitories)
+
+def repogitoryInfos(path):
+    repoPaths = findRepogitories(path, [])
+    return getRepogitoryInfos(repoPaths)
 
 if __name__ == '__main__':
     path = sys.argv[1]
