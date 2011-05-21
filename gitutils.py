@@ -34,6 +34,9 @@ def repogitoryInfos(path):
     repoPaths = findRepogitories(path, [])
     return getRepogitoryInfos(repoPaths)
 
+def notCleanRepogitoryInfos(path):
+    return filter(lambda x: return x['status'].find('working directory clean') > -1, repogitoryInfos(path))
+
 if __name__ == '__main__':
     path = sys.argv[1]
     print 'begin test.'
