@@ -18,8 +18,8 @@ def execCommand(cmd, path):
     return p.stdout.read().strip()
 
 def createRepoInfo(path):
-    branch = execCommand('git symbolic-ref HEAD 2> /dev/null', path)
-    status = execCommand('git status 2> /dev/null', path)
+    branch = execCommand('git symbolic-ref HEAD', path)
+    status = execCommand('git status', path)
     return {
         'name': path.split('/')[-1],
         'path': path,
