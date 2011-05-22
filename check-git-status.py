@@ -17,8 +17,8 @@ def callback(widget, event):
     tooltips.enable()
     tooltips.set_delay(100)
     for r in repos:
-        menuitem_x = gtk.MenuItem(r['name'])
-        tooltips.set_tip(menuitem_x, r['status'])
+        menuitem_x = gtk.MenuItem(r['menuItem'])
+        tooltips.set_tip(menuitem_x, r['path'] + "\n" + r['status'])
         menu.append(menuitem_x)
     menuitem_exit = gtk.MenuItem("Exit")
     menu.append(menuitem_exit)

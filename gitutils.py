@@ -20,11 +20,20 @@ def execCommand(cmd, path):
 def createRepoInfo(path):
     branch = execCommand('git symbolic-ref HEAD', path)
     status = execCommand('git status', path)
+    flag = 'C' if status.find('Changes not staged for commit:') > -1 else ' '
+    flag += 'U' if status.find('Untracked files:') > -1 else ' '
+    name = path.split('/')[-1] 
+    menuItem = '[' + flag + '] ' + name 
+    print('[%s]' % branch)
+    if branch != u'refs/heads/master':
+        menuItem += ' (' + branch + ')'
     return {
-        'name': path.split('/')[-1],
+        'name': name,
         'path': path,
         'branch': branch,
         'status': status,
+        'flag': flag,
+        'menuItem': menuItem
     }
 
 def getRepogitoryInfos(repogitories):
