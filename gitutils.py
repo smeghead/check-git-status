@@ -45,11 +45,19 @@ def repogitoryInfos(path):
 def notCleanRepogitoryInfos(path):
     return filter(lambda x: x['status'].find('working directory clean') == -1, repogitoryInfos(path))
 
+def flatten(lst):
+    if isinstance(lst, list):
+       return reduce(lambda a,b: a + flatten(b), lst, [])
+    else:
+        return [lst]
+
+def notCleanRepogitoryInfosByPathes(pathes):
+    return flatten(map(notCleanRepogitoryInfos, pathes))
+
 if __name__ == '__main__':
-    path = sys.argv[1]
+    pathes = sys.argv[1:]
     print 'begin test.'
-    repoPaths = findRepogitories(path, [])
-    repos = getRepogitoryInfos(repoPaths)
+    repos = notCleanRepogitoryInfosByPathes(pathes)
     print repos
     print 'completed test.'
 

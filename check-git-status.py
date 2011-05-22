@@ -4,14 +4,14 @@ import gtk
 import egg.trayicon     # egg == python-gnome2-extras
 import gitutils
 
-if len(sys.argv) != 2:
+if len(sys.argv) == 1:
     exit('ERROR: required argument search path.')
 
-searchPath = sys.argv[1]
+searchPathes = sys.argv[1:]
 trayIconImage = os.path.dirname(__file__) + '/icon.png'
 
 def callback(widget, event):
-    repos = gitutils.notCleanRepogitoryInfos(searchPath)
+    repos = gitutils.notCleanRepogitoryInfosByPathes(searchPathes)
     menu = gtk.Menu()
     tooltips = gtk.Tooltips()
     tooltips.enable()
