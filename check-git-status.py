@@ -4,6 +4,18 @@ import gtk
 import egg.trayicon     # egg == python-gnome2-extras
 import gitutils
 
+'''
+extended menu item.
+'''
+class RepogitoryItemMenu(gtk.ImageMenuItem):
+    repo = None
+    def __init__(self, name, r):
+        gtk.ImageMenuItem.__init__(self, name)
+        self.repo = r
+        self.set_image(
+                gtk.image_new_from_file('%s/%s.png' % (os.path.dirname(__file__), self.repo['flag'])))
+        self.connect("activate", lambda x: os.popen('%s --working-directory="%s"' % ('gnome-terminal', self.repo['path'])))
+
 if len(sys.argv) == 1:
     exit('ERROR: required argument search path.')
 
@@ -11,14 +23,13 @@ searchPathes = sys.argv[1:]
 trayIconImage = os.path.dirname(__file__) + '/icon.png'
 
 def callback(widget, event):
-    repos = gitutils.notCleanRepogitoryInfosByPathes(searchPathes)
+    repos = gitutils.searchRepogitoryInfosByPathes(searchPathes, lambda x: True)
     menu = gtk.Menu()
     tooltips = gtk.Tooltips()
     tooltips.enable()
     tooltips.set_delay(100)
     for r in repos:
-        menuitem_x = gtk.ImageMenuItem(r['menuItem'])
-        menuitem_x.set_image(gtk.image_new_from_file('%s/%s.png' % (os.path.dirname(__file__), r['flag'])))
+        menuitem_x = RepogitoryItemMenu(r['menuItem'], r)
         tooltips.set_tip(menuitem_x, r['path'] + "\n" + r['status'])
         menu.append(menuitem_x)
     menuitem_exit = gtk.MenuItem("Exit")
