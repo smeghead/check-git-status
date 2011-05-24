@@ -19,6 +19,7 @@ class RepogitoryItemMenu(gtk.ImageMenuItem):
         self.repo = r
         self.set_image(
                 gtk.image_new_from_file(ICONS[r['flag']]))
+        self.set_tooltip_text((r['path'] + "\n" + r['status']))
         #when menu item is selected, open gnome-terminal in repogitory directory.
         self.connect("activate",
                 lambda x: os.popen(
@@ -33,12 +34,8 @@ trayIconImage = os.path.dirname(__file__) + '/icon.png'
 def trayIconClicked(widget, event):
     repos = gitutils.searchRepogitoryInfosByPathes(searchPathes, lambda x: True)
     menu = gtk.Menu()
-    tooltips = gtk.Tooltips()
-    tooltips.enable()
-    tooltips.set_delay(100)
     for r in repos:
         menuitem_x = RepogitoryItemMenu(r['menuItem'], r)
-        tooltips.set_tip(menuitem_x, r['path'] + "\n" + r['status'])
         menu.append(menuitem_x)
     menu.append(gtk.SeparatorMenuItem())
     menuitem_exit = gtk.MenuItem("Exit")
