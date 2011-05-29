@@ -7,7 +7,6 @@ def findRepogitories(baseDir, acc):
         fullPath = os.path.join(baseDir, filename)
         if os.path.isdir(fullPath) and filename == '.git':
             acc.append(baseDir)
-            break
         elif os.path.isdir(fullPath):
             findRepogitories(fullPath, acc)
     return acc
