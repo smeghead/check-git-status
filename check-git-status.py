@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import os, sys
+import threading
 import gtk
 import egg.trayicon     # egg == python-gnome2-extras
 import gitutils
@@ -31,8 +32,22 @@ if len(sys.argv) == 1:
 searchPathes = sys.argv[1:]
 trayIconImage = os.path.dirname(__file__) + '/icon.png'
 
-def trayIconClicked(widget, event):
+gtk.gdk.threads_init() # This needs to work threading.Timer with gtk.main.
+
+repos = []
+
+timer = None
+
+def updateRepos():
+    global repos, timer
     repos = gitutils.searchRepogitoryInfosByPathes(searchPathes, lambda x: True)
+    timer = threading.Timer(60, updateRepos)
+    timer.start()
+
+updateRepos()
+
+def trayIconClicked(widget, event):
+    global repos
     menu = gtk.Menu()
     for r in repos:
         menuitem_x = RepogitoryItemMenu(r['menuItem'], r)
@@ -40,7 +55,7 @@ def trayIconClicked(widget, event):
     menu.append(gtk.SeparatorMenuItem())
     menuitem_exit = gtk.MenuItem("Exit")
     menu.append(menuitem_exit)
-    menuitem_exit.connect("activate", lambda x: gtk.main_quit())
+    menuitem_exit.connect("activate", lambda x: timer.cancel() or gtk.main_quit())
     menu.show_all()
     menu.popup(None, None, None, event.button, event.time, tray)
 
